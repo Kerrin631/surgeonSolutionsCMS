@@ -1,0 +1,13 @@
+body{
+/*	background-image: url('https://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/09/image_consultant_feature.jpg');
+	background-repeat: no-repeat;*/
+	background: url('https://d152j5tfobgaot.cloudfront.net/wp-content/uploads/2015/09/image_consultant_feature.jpg') no-repeat center center fixed;
+	 -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.boxShadow{
+	box-shadow: 0 0 30px black;
+}

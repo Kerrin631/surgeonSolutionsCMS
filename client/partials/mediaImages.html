@@ -1,0 +1,98 @@
+<h1>Media - Images</h1>
+
+
+<div ng-controller='mediaImagesController'>
+	<div class="row">
+        <div class="form-group col-md-3 col-md-offset-1">
+            <h3>Select Images</h3>
+            <input type="file" accept="image/x-png, image/gif, image/jpeg" nv-file-select="" uploader="uploader" multiple  /><br/>
+        </div>
+        <div class="form-group col-md-3 col-md-offset-1">
+        	<h3>Doctor Name</h3>
+			<select class="form-control" ng-model='clientInfo.apiKey'>
+				<option ng-repeat='client in allClients' value="{{client.apiKey}}">Dr. {{client.firstName}} {{client.lastName}}</option>
+			</select>
+		</div>
+	</div>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1" style="margin-bottom: 40px">
+
+            <h3>Upload queue</h3>
+            <p>Queue length: {{ uploader.queue.length }}</p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th ng-show="uploader.isHTML5">Size</th>
+                        <th ng-show="uploader.isHTML5">Progress</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in uploader.queue">
+                        <td><strong>{{ item.file.name }}</strong></td>
+                        <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                        <td ng-show="uploader.isHTML5">
+                            <div class="progress" style="margin-bottom: 0;">
+                                <div class="progress-bar progress-bar-info progress-bar-striped"role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                            <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                            <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                        </td>
+                        <td nowrap>
+                        <!-- "item.upload()" -->
+                            <button type="button" class="btn btn-success btn-xs" ng-click= "doctorCheck()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                <span class="glyphicon glyphicon-upload"></span> Upload
+                            </button>
+                            <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                                <span class="glyphicon glyphicon-trash"></span> Remove
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div>
+                <div>
+                    Queue progress:
+                    <div class="progress" style="">
+                        <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                    </div>
+                </div>
+                <!-- "uploader.uploadAll()" -->
+                <button type="button" class="btn btn-success btn-sm" ng-click="doctorCheck()" ng-disabled="!uploader.getNotUploadedItems().length">
+                    <span class="glyphicon glyphicon-upload"></span> Upload all
+                </button>
+                <button type="button" class="btn btn-warning btn-sm" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                    <span class="glyphicon glyphicon-trash"></span> Remove all
+                </button>
+            </div>
+        </div>
+      </div>
+
+<!--       <video width="320" height="240" controls>
+  <source src="	
+https://s3.amazonaws.com/kerrinsbucket/test.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+Your browser does not support the video tag.
+</video>
+ -->
+
+
+    <!-- <div ng-repeat='pic in pics.Contents'>
+
+    	<img src="https://s3.amazonaws.com/kerrinsbucket/{{pic.Key}}">
+    	<div class="well well-sm">https://s3.amazonaws.com/kerrinsbucket/{{pic.Key}}</div>
+    </div> -->
+</div>

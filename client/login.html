@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app='surgeon_solutions_app'>
+<head>
+	 <!-- Personal Stylesheet -->
+    <link rel="stylesheet" type="text/css" href="/static/loginStylesheet.css">
+</head>
+<body>
+
+	<!-- <div class="centerHorizontal"> -->
+	    <div class="left col-lg-6 col-md-6 col-sm-12 col-xs-12">
+		    <div class="panel panel-default boxShadow">
+				<div class="panel-body">
+			    	<div class="page-header text-center">
+						<h1>Login</h1>
+					</div>
+					<form ng-submit='submitLogIn()'>
+						<div class="form-group">
+							<label>Email address</label>
+							<input type="email" class="form-control" placeholder="Email" ng-model='user.username'>
+						</div>
+						<div class="form-group">
+							<label>Password</label>
+							 <input type="password" class="form-control" placeholder="Password" ng-model='user.password'>
+						</div>
+						<button type="submit" class="btn btn-success center-block">Login</button>
+					</form>
+			    </div>
+		    </div>
+	    </div>
+	    <div class="right col-lg-6 col-md-6 col-sm-12 col-xs-12">
+		    <div class="panel panel-default boxShadow">
+				<div class="panel-body">
+					<div class="page-header text-center">
+						<h1>Register</h1>
+					</div>
+					<form ng-submit='registerNewUser()'>
+						<div class="form-group">
+							<label>First Name</label>
+							<input type="text" class="form-control" placeholder="John" ng-model='newUser.firstName'>
+						</div>
+						<div class="form-group">
+							<label>Last Name</label>
+							<input type="text" class="form-control" id="lastName" placeholder="Doe" ng-model='newUser.lastName'>
+						</div>
+						<div class="form-group">
+							<label>Email address</label>
+							<input type="email" class="form-control" id="email" placeholder="Email" ng-model='newUser.email'>
+						</div>
+						<div class="form-group">
+							<label>Password</label>
+							 <input type="password" class="form-control" id="password" placeholder="Password" ng-model='newUser.password'>
+						</div>
+						<div class="form-group">
+							<label>Confirm Password</label>
+							 <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" ng-model='newUser.confirmPassword'>
+						</div>
+						<div class="form-group">
+						<label>Employee Type</label>
+							<select class="form-control" ng-model='newUser.type'>
+								<option>Admin</option>
+								<option>Content Manager</option>
+								<option>Photographer</option>
+								<option>Software Engineer</option>
+								<option>Other</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn-info center-block">Register</button>
+					</form>
+		    	</div>
+		    </div>
+		</div>
+	<!-- </div> -->
+	<!-- <br><br><br><br><br> -->
+</body>
+</html>

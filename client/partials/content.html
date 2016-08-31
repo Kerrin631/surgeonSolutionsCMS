@@ -1,0 +1,142 @@
+<div class="page-header">
+	<h1>Content</h1>
+</div>
+
+
+<button type="button"  class="btn btn-success" data-toggle="modal" data-target="#newContentModal">
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Content
+</button><br><br>
+
+<!-- New Content Modal -->
+<div ng-controller='clientController'>
+	<div class="modal fade" id="newContentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h2 class="modal-title" id="myModalLabel">Add New Content</h2>
+				</div>
+				<div class="modal-body">
+		        	<form ng-submit='addNewContent()'>
+		        		<div class="form-group">
+							<label>Doctor Name</label>
+							<select class="form-control" ng-model='newContent.apiKey'>
+								<option ng-repeat='client in allClients' value="{{client.apiKey}}">Dr. {{client.firstName}} {{client.lastName}}</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label>Title</label>
+							<input type="text" class="form-control" placeholder="About us..." ng-model='newContent.title'>
+						</div>
+						<div class="form-group">
+							<label>Information</label>
+							<textarea class="form-control" rows="3" placeholder="We provide world class service in the field of..." ng-model='newContent.information'></textarea>
+						</div>						
+<!-- 
+						<video width="100%" controls>
+							<source src="../static/test.mp4" type="video/mp4">
+							<source src="../static/test.mp4" type="video/ogg">
+					  Your browser does not support the video tag.
+						</video> -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#newContentModal">Add Content</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End New Content Modal -->
+
+<!-- Content Table -->
+
+<div class="form-group">
+    <div class="input-group col-lg-4 col-md-4 col-sm-6 col-xs-7">
+      <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+      <input type="text" class="form-control" id="exampleInputAmount" placeholder="Search" ng-model="searchText">
+    </div>
+</div>
+
+<!-- Doctor Search Field-->
+<div class="form-group">
+    <div class="input-group col-lg-4 col-md-4 col-sm-6 col-xs-7">
+      <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+      <input type="text" class="form-control" id="exampleInputAmount" placeholder="Doctor" ng-model="search.doctor">
+    </div>
+</div>
+<!-- End Doctor Search Field-->
+
+
+<div class="table-responsive">
+	<table class="table table-hover">
+    	<tr>
+    		<th>Doctor</th>
+    		<th>Title</th>
+    		<th>Information</th>
+    		<th>Details</th>
+    	</tr>
+    	<tbody>
+    		<tr ng-repeat='content in allContent | orderBy: name | filter:searchText | filter: search'>
+	    		<td>{{content.doctor}}</td>
+	    		<td>{{content.title}}</td>
+	    		<td data-toggle="tooltip" data-placement="right" title="{{content.information}}">{{content.information | limitTo: 50}}{{content.information.length >50 ? '...': ''}}</td>
+	    		<td><a ng-click='findContentDetails(content._id)' data-toggle="modal" data-target="#contentModal">View Details</a></td>
+	    	</tr>
+    	</tbody>
+	</table>
+</div>
+<!-- End Content Table -->
+
+<!-- Specific Content Modal -->
+<div class="modal fade" id="contentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title text-center" id="myModalLabel">Dr. {{contentInfo[0].doctor}} - {{contentInfo[0].title}}</h2>
+			</div>
+			<div class="modal-header text-center">
+				<p>{{contentInfo[0].information}}</p>
+				<a data-toggle="modal" data-target="#editContentModal" data-dismiss="modal">Edit</a>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- End Specific Content Modal -->
+
+<!-- Edit Content Modal -->
+<div class="modal fade" id="editContentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">Dr. {{contentInfo[0].doctor}} - {{contentInfo[0].title}} <br><small>Edit Content</small></h2>
+			</div>
+			<div class="modal-body">
+				<form ng-submit='editContent(contentInfo[0])' >
+					<div class="form-group">
+						<label>Content Title</label>
+						<input type="text" class="form-control" placeholder="{{contentInfo[0].title}}" ng-model='contentInfo[0].title'>
+					</div>
+					<div class="form-group">
+						<label>Information</label>
+						<textarea class="form-control" rows="3" placeholder="{{contentInfo[0].information}}" ng-model='contentInfo[0].information'></textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger pull-left" data-dismiss="modal" ng-click='deleteContent(contentInfo[0]._id)'>Delete</button>
+						<button type="close" class="btn btn-default " data-dismiss="modal" ng-click='clearContent()'>Close</button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editContentModal">Update</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Edit Content Modal -->

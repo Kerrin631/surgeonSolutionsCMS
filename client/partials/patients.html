@@ -1,0 +1,440 @@
+<!-- Will be able to view all patients as well as have a button to add patient. if add client button is clicked a modal will pop up allowing you to enter basic information such as name and address, etc... -->
+
+<div class="page-header">
+  <h1>Patients</h1>
+</div>
+
+<button type="button"  class="btn btn-success" data-toggle="modal" data-target="#newPatientModal">
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Patient
+</button><br><br>
+
+<!-- New Patient Modal -->
+<div ng-controller='clientController'>
+	<div class="modal fade" id="newPatientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h2 class="modal-title" id="myModalLabel">Add New Patient</h2>
+				</div>
+				<div class="modal-body">
+		        	<form ng-submit='registerNewPatient()'>
+		        		<div class="form-group">
+							<label>Doctor Name</label>
+							<select class="form-control" ng-model='newPatient.apiKey'>
+								<option ng-repeat='client in allClients' value="{{client.apiKey}}">Dr. {{client.firstName}} {{client.lastName}}</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label>First Name</label>
+							<input type="text" class="form-control" placeholder="John" ng-model='newPatient.firstName'>
+						</div>
+						<div class="form-group">
+							<label>Last Name</label>
+							 <input type="text" class="form-control" placeholder="Doe" ng-model='newPatient.lastName'>
+						</div>
+						<div class="form-group">
+							<label>Email address</label>
+							<input type="email" class="form-control" placeholder="Email" ng-model='newPatient.email'>
+						</div>
+						<div class="form-group">
+							<label>Phone Number</label>
+							<input type="text" class="form-control" placeholder="(xxx) xxx-xxxx" ng-model='newPatient.phone'>
+						</div>
+						<div class="form-group form-inline">
+							<label>Street Address</label>
+							<input type="text" class="form-control" placeholder="1000 Main Street" ng-model='newPatient.streetAddress'>
+
+							<label>City/Town</label>
+							<input type="text" class="form-control" placeholder="Houston" ng-model='newPatient.city'>
+						</div>
+						<div class="form-group form-inline">
+							<label>State/Province</label>
+							<input type="text" class="form-control" placeholder="Texas" ng-model='newPatient.state'>
+							
+							<label>Zip Code </label>
+							<input type="text" class="form-control" placeholder="77002" ng-model='newPatient.zip'>
+						</div>
+						<div class="form-group">
+							<label>Country</label>
+							<select class="form-control" ng-model='newPatient.country'>
+								<option>United States of America</option>
+								<option>Other</option>
+							</select>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#newPatientModal">Add patient</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End New Patient Modal -->
+
+<!-- Patient Table -->
+
+<div class="form-group">
+    <div class="input-group col-lg-4 col-md-4 col-sm-6 col-xs-7">
+      <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+      <input type="text" class="form-control" id="exampleInputAmount" placeholder="Search" ng-model="searchText">
+    </div>
+</div>
+
+<!-- Doctor Search Field-->
+<div class="form-group">
+    <div class="input-group col-lg-4 col-md-4 col-sm-6 col-xs-7">
+      <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+      <input type="text" class="form-control" id="exampleInputAmount" placeholder="Doctor" ng-model="search.doctor">
+    </div>
+</div>
+<!-- End Doctor Search Field-->
+
+<!-- Location Search Field-->
+<div class="form-group">
+    <div class="input-group col-lg-4 col-md-4 col-sm-6 col-xs-7">
+      <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+      <input type="text" class="form-control" id="exampleInputAmount" placeholder="City" ng-model="search1.city">
+    </div>
+</div>
+<!-- End Location Search Field-->
+
+<div class="table-responsive">
+	<table class="table table-hover">
+    	<tr>
+    		<th>Name</th>
+    		<th>Email</th>
+    		<th>Phone#</th>
+    		<th>Address</th>
+    		<th>Doctor</th>
+    		<th>Details</th>
+    	</tr>
+    	<tbody>
+    		<tr ng-repeat='patient in allPatients | orderBy: name | filter:searchText | filter: search | filter: search1'>
+	    		<td>{{patient.firstName}} {{patient.lastName}}</td>
+	    		<td>{{patient.email}}</td>
+	    		<td>{{patient.phone}}</td>
+	    		<td>{{patient.streetAddress}}, {{patient.city}}, {{patient.state}} {{patient.zip}}</td>
+	    		<td>Dr. {{patient.doctor}}</td>
+	    		<td><a ng-click='findPatientDetails(patient._id)' data-toggle="modal" data-target="#patientModal">View Details</a></td>
+	    	</tr>
+    	</tbody>
+	</table>
+</div>
+<!-- End Patient Table -->
+
+<!-- Specific Patient Modal -->
+<div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">{{patientInfo[0].firstName}} {{patientInfo[0].lastName}} <small>Info</small></h2>
+			</div>
+			<div class="modal-header">
+				<address>
+					<strong>{{patientInfo[0].firstName}} {{patientInfo[0].lastName}}</strong><br>
+					{{patientInfo[0].streetAddress}}<br>
+					{{patientInfo[0].city}}, {{patientInfo[0].patientInfo[0]}} {{patient.zip}}<br>
+					<abbr title="Phone">P:{{patientInfo[0].phone}}</abbr><br>
+					<a data-toggle="modal" data-target="#editPatientModal" data-dismiss="modal">Edit</a>
+				</address>
+			</div>
+
+			<div class="modal-header">
+				<h3>Procedures</h3>
+				<div class='procedure' ng-repeat='procedure in patientInfo[0].procedure'>
+					<strong>{{procedure.procedureType}}</strong><br>
+					<p>Testimonial: {{procedure.testimonial}}</p>
+					<img src="{{procedure.beforeImg}}" class="img-rounded">
+					<img src="{{procedure.afterImg}}" class="img-rounded">
+					<br>
+					<a ng-click='findProcedure({patient: patientInfo[0]._id, procedure: procedure._id})' data-toggle="modal" data-target="#editProcedureModal" data-dismiss="modal">Edit</a>
+					<br><br>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#addProcedureModal" data-dismiss="modal">Add Procedure</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- End Specific Patient Modal -->
+
+<!-- Edit Patient Modal -->
+<div class="modal fade" id="editPatientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">{{patientInfo[0].firstName}} {{patientInfo[0].lastName}} <br><small>Edit Patient</small></h2>
+			</div>
+			<div class="modal-body">
+				<form ng-submit='editPatient(patientInfo[0])' >
+					<div class="form-group">
+						<label>First Name</label>
+						<input type="text" class="form-control" placeholder="{{patientInfo[0].firstName}}" ng-model='patientInfo[0].firstName'>
+					</div>
+					<div class="form-group">
+						<label>Last Name</label>
+						<input type="text" class="form-control" placeholder="{{patientInfo[0].lastName}}" ng-model='patientInfo[0].lastName'>
+					</div>
+					<div class="form-group">
+						<label>Phone</label>
+						<input type="text" class="form-control" placeholder="{{patientInfo[0].phone}}" ng-model='patientInfo[0].phone'>
+					</div>
+					<div class="form-group">
+						<label>Email</label>
+						<input type="text" class="form-control" placeholder="{{patientInfo[0].email}}" ng-model='patientInfo[0].email'>
+					</div>
+					<div class="form-group form-inline">
+						<label>Street Address</label>
+						<input type="text" class="form-control" placeholder="1000 Main Street" ng-model='patientInfo[0].streetAddress'>
+
+						<label>City/Town</label>
+						<input type="text" class="form-control" placeholder="Houston" ng-model='patientInfo[0].city'>
+					</div>
+					<div class="form-group form-inline">
+						<label>State/Province</label>
+						<input type="text" class="form-control" placeholder="Texas" ng-model='patientInfo[0].state'>
+						
+						<label>Zip Code </label>
+						<input type="text" class="form-control" placeholder="77002" ng-model='patientInfo[0].zip'>
+					</div>
+					<div class="form-group">
+						<label>Country</label>
+						<select class="form-control" ng-model='patientInfo[0].country'>
+							<option>United States of America</option>
+							<option>Other</option>
+						</select>
+					</div>
+					<!--  -->
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger pull-left" data-dismiss="modal" ng-click='deletePatient(patientInfo[0]._id)'>Delete</button>
+
+						<button type="close" class="btn btn-default " data-dismiss="modal" ng-click='clearNewAddress()'>Close</button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editPatientModal">Update</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Edit Patient Modal -->
+
+
+<!-- Add New procedure for Individual Patient Modal -->
+<div class="modal fade" id="addProcedureModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">{{patientInfo[0].firstName}} {{patientInfo[0].lastName}} <br><small>Add Procedure</small></h2>
+			</div>
+			<div class="modal-body">
+				<form ng-submit='addProcedureToPatient(patientInfo[0]._id)'>
+					<div class="form-group">
+						<label>Procedure Type</label>
+						<select class="form-control" ng-model='procedureInfo.type'>
+							<option>Breast - Augmentation</option>
+							<option>Breast - Lift</option>
+							<option>Breast - Reduction</option>
+							<option>Breast - Other</option>
+							<option>Body - Brazilian Butt Lift</option>
+							<option>Body - Butt Lift</option>
+							<option>Body - Gynecomastia Treatment</option>
+							<option>Body - Liposuction</option>
+							<option>Body - Tummy Tuck</option>
+							<option>Body - Other</option>
+							<option>Face - Brow Lift</option>
+							<option>Face - Cheek Enhancement</option>
+							<option>Face - Chin Enhancement</option>
+							<option>Face - Eyelid Lift</option>
+							<option>Face - Face Lift</option>
+							<option>Face - Neck Lift</option>
+							<option>Face - Rhinoplasty</option>
+							<option>Face - Other</option>
+							<option>Skin - Laser Resurfacing</option>
+							<option>Skin - Botox</option>
+							<option>Skin - Filler Treatment</option>
+							<option>Skin - Other</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label>Testimonial</label>
+						<textarea class="form-control" rows="3" placeholder="My experience was..." ng-model='procedureInfo.testimonial'></textarea>
+					</div>
+
+
+					<div class="form-group">
+						<label>Before</label>
+						<input type="text" class="form-control" placeholder="Input image URL" ng-model='procedureInfo.beforeImg'>
+						<p>~or~</p>
+						<input type="file" accept="image/x-png, image/gif, image/jpeg" nv-file-select="" uploader="uploaderBefore" />
+						<table class="table">
+		                <thead>
+		                    <tr>
+		                        <th>Name</th>
+		                        <th ng-show="uploaderBefore.isHTML5">Size</th>
+		                        <th ng-show="uploaderBefore.isHTML5">Progress</th>
+		                        <th>Status</th>
+		                        <!-- <th>Actions</th> -->
+		                    </tr>
+		                </thead>
+		                <tbody>
+		                    <tr ng-repeat="item in uploaderBefore.queue">
+		                        <td><strong>{{ item.file.name }}</strong></td>
+		                        <td ng-show="uploaderBefore.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+		                        <td ng-show="uploaderBefore.isHTML5">
+		                            <div class="progress" style="margin-bottom: 0;">
+		                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+		                            </div>
+		                        </td>
+		                        <td class="text-center">
+		                            <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+		                            <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+		                            <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+		                        </td>
+		                        <!-- <td nowrap>
+		                            <button type="button" class="btn btn-success btn-xs" ng-click= "doctorCheck()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+		                                <span class="glyphicon glyphicon-upload"></span> Upload
+		                            </button>
+		                            <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+		                                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+		                            </button>
+		                            <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+		                                <span class="glyphicon glyphicon-trash"></span> Remove
+		                            </button>
+		                        </td> -->
+		                    </tr>
+		                </tbody>
+		            </table>
+					</div>
+
+
+					<div class="form-group">
+						<label>After</label>
+						<input type="text" class="form-control" placeholder="Input image URL" ng-model='procedureInfo.afterImg'>
+						<p>~or~</p>
+						<input type="file" accept="image/x-png, image/gif, image/jpeg" nv-file-select="" uploader="uploaderAfter"/>
+						<table class="table">
+		                <thead>
+		                    <tr>
+		                        <th>Name</th>
+		                        <th ng-show="uploaderAfter.isHTML5">Size</th>
+		                        <th ng-show="uploaderAfter.isHTML5">Progress</th>
+		                        <th>Status</th>
+		                        <!-- <th>Actions</th> -->
+		                    </tr>
+		                </thead>
+		                <tbody>
+		                    <tr ng-repeat="item in uploaderAfter.queue">
+		                        <td><strong>{{ item.file.name }}</strong></td>
+		                        <td ng-show="uploaderAfter.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+		                        <td ng-show="uploaderAfter.isHTML5">
+		                            <div class="progress" style="margin-bottom: 0;">
+		                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+		                            </div>
+		                        </td>
+		                        <td class="text-center">
+		                            <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+		                            <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+		                            <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+		                        </td>
+		                        <!-- <td nowrap>
+		                            <button type="button" class="btn btn-success btn-xs" ng-click= "doctorCheck()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+		                                <span class="glyphicon glyphicon-upload"></span> Upload
+		                            </button>
+		                            <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+		                                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+		                            </button>
+		                            <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+		                                <span class="glyphicon glyphicon-trash"></span> Remove
+		                            </button>
+		                        </td> -->
+		                    </tr>
+		                </tbody>
+		            </table>
+					</div>
+
+
+					<div class="modal-footer">
+						<button type="close" class="btn btn-default" data-dismiss="modal" ng-click='clearNewProcedure()'>Close</button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addProcedureModal">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End New Procedure for Individual Patient Modal -->
+
+<!-- Edit Procedure Modal -->
+<div class="modal fade" id="editProcedureModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">{{address.name}} <br><small>Edit Procedure</small></h2>
+			</div>
+			<div class="modal-body">
+				<form ng-submit='editPatientProcedure({patient: patientInfo[0]._id, procedure: procedure._id})'>
+					<div class="form-group">
+						<label>Procedure Type</label>
+						<select class="form-control" ng-model='procedure.procedureType'>
+							<option>Breast - Augmentation</option>
+							<option>Breast - Lift</option>
+							<option>Breast - Reduction</option>
+							<option>Breast - Other</option>
+							<option>Body - Brazilian Butt Lift</option>
+							<option>Body - Butt Lift</option>
+							<option>Body - Gynecomastia Treatment</option>
+							<option>Body - Liposuction</option>
+							<option>Body - Tummy Tuck</option>
+							<option>Body - Other</option>
+							<option>Face - Brow Lift</option>
+							<option>Face - Cheek Enhancement</option>
+							<option>Face - Chin Enhancement</option>
+							<option>Face - Eyelid Lift</option>
+							<option>Face - Face Lift</option>
+							<option>Face - Neck Lift</option>
+							<option>Face - Rhinoplasty</option>
+							<option>Face - Other</option>
+							<option>Skin - Laser Resurfacing</option>
+							<option>Skin - Botox</option>
+							<option>Skin - Filler Treatment</option>
+							<option>Skin - Other</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label>Testimonial</label>
+						<textarea class="form-control" rows="3" placeholder="My experience was..." ng-model='procedure.testimonial'></textarea>
+					</div>
+					<div class="form-group">
+						<label>Before</label>
+						<input type="text" class="form-control" placeholder="Input image URL" ng-model='procedure.beforeImg'>
+					</div>
+					<div class="form-group">
+						<label>After</label>
+						<input type="text" class="form-control" placeholder="Input image URL" ng-model='procedure.afterImg'>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger pull-left" data-dismiss="modal" ng-click='deletePatientProcedure({patient: patientInfo[0]._id, procedure: procedure._id})'>Delete</button>
+						<button type="close" class="btn btn-default " data-dismiss="modal" ng-click='clearNewAddress()'>Close</button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editProcedureModal">Update</button>
+
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Edit Address Modal -->
+<br><br>

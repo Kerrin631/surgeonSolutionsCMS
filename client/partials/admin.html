@@ -1,0 +1,60 @@
+<div class="page-header">
+  <h1>Admin <small>- Authenticate Users</small></h1>
+</div>
+
+<div class="panel panel-danger panel-default mypanel">
+  <div class="panel-heading">
+    <h3 class="panel-title">Users Awaiting Authorization</h3>
+  </div>
+  <div class="panel-body">
+    <table class="table table-hover">
+    	<tr>
+    		<th>Name</th>
+    		<th>Email</th>
+    		<th>Role</th>
+    		<th>Action</th>
+    	</tr>
+    	<tbody>
+    		<tr ng-repeat="user in allUsers | filter:{'isAuthorized': false}:true">
+    			<td class="text-capitalize">{{user.firstName}} {{user.lastName}}</td>
+    			<td>{{user.email}}</td>
+    			<td>{{user.type}}</td>
+    			<td><button type="button" class="btn btn-success btn-sm" ng-click='authorizeUser(user._id)'>Authorize</button> | <button type="button" class="btn btn-danger btn-sm" ng-click='deleteUser(user._id)'>Delete</button></td>
+    		</tr>
+    	</tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel panel-primary panel-default mypanel">
+  <div class="panel-heading">
+    <h3 class="panel-title">Authorized Users</h3>
+  </div>
+  <div class="panel-body">
+    <!-- Panel content -->
+    <div class="left col-lg-6 col-md-6 col-sm-12 col-xs-12">
+    	<h3>Users</h3>
+    	<br><br>
+		<address ng-repeat="user in allUsers | filter:{'isAuthorized': true, 'isAdmin': false}:true | orderBy: 'user.firstName'">
+			<strong class="text-capitalize">{{user.firstName}} {{user.lastName}}</strong><br>
+			<p>{{user.type}}</p>
+			<a href="mailto:#">{{user.email}}</a><br>
+			<button type="button" class="btn btn-link" ng-click=makeAdmin(user._id)>Make Admin</button><br>
+			<button type="button" class="btn btn-link " ng-click='deleteUser(user._id)'>Delete</button>
+			<br><br>
+		</address>
+    </div>
+    <div class="right col-lg-6 col-md-6 col-sm-12 col-xs-12">
+    	<h3>Admin Users</h3>
+    	<br><br>
+    	<address ng-repeat="user in allUsers | filter:{'isAuthorized': true, 'isAdmin': true}:true | orderBy: 'user.firstName'">
+			<strong class="text-capitalize">{{user.firstName}} {{user.lastName}}</strong><br>
+			<p>{{user.type}}</p>
+			<a href="mailto:#">{{user.email}}</a><br>
+			<button type="button" class="btn btn-link" ng-click=removeAdminAccess(user._id)>Remove Admin Privileges</button>
+			<br><br>
+		</address>
+		<br><br>
+    </div>
+  </div>
+</div>

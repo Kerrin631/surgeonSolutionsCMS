@@ -1,0 +1,329 @@
+<!-- Will be able to view all clients as well as have a button to add clients. if add client button is clicked a modal will pop up allowing you to enter basic information such as name and address -->
+
+<div class="page-header">
+  <h1>Clients</h1>
+</div>
+
+<button type="button"  class="btn btn-success" data-toggle="modal" data-target="#newClientModal">
+	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Client
+</button><br><br>
+
+<!-- New Client Modal -->
+<div class="modal fade" id="newClientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">Add New Client</h2>
+			</div>
+			<div class="modal-body">
+	        	<form ng-submit='registerNewClient()'>
+        			<div class="form-group">
+						<label>Practice Name</label>
+						<input type="text" class="form-control" placeholder="Dr. John Doe Cosmetic Surgery" ng-model='newClient.practice'>
+					</div>
+					<div class="form-group">
+						<label>First Name</label>
+						<input type="text" class="form-control" placeholder="John" ng-model='newClient.firstName'>
+					</div>
+					<div class="form-group">
+						<label>Last Name</label>
+						 <input type="text" class="form-control" placeholder="Doe" ng-model='newClient.lastName'>
+					</div>
+					<div class="form-group">
+						<label>Email address</label>
+						<input type="email" class="form-control" placeholder="Email" ng-model='newClient.email'>
+					</div>
+					<div class="form-group">
+						<label>Phone Number</label>
+						<input type="text" class="form-control" placeholder="(xxx) xxx-xxxx" ng-model='newClient.phone'>
+					</div>
+					<div class="form-group form-inline">
+						<label>Street Address</label>
+						<input type="text" class="form-control" placeholder="1000 Main Street" ng-model='newClient.streetAddress'>
+
+						<label>City/Town</label>
+						<input type="text" class="form-control" placeholder="Houston" ng-model='newClient.city'>
+					</div>
+					<div class="form-group form-inline">
+						<label>State/Province</label>
+						<input type="text" class="form-control" placeholder="Texas" ng-model='newClient.state'>
+						
+						<label>Zip Code </label>
+						<input type="text" class="form-control" placeholder="77002" ng-model='newClient.zip'>
+					</div>
+					<div class="form-group">
+						<label>Country</label>
+						<select class="form-control" ng-model='newClient.country'>
+							<option>United States of America</option>
+							<option>Other</option>
+						</select>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#newClientModal">Save changes</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End New Client Modal -->
+
+<!-- Client Table -->
+
+<div class="form-group">
+    <div class="input-group col-lg-4 col-md-4 col-sm-6 col-xs-7">
+      <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+      <input type="text" class="form-control" id="exampleInputAmount" placeholder="Search" ng-model="searchText">
+    </div>
+  </div>
+
+
+<div class="table-responsive">
+	<table class="table table-hover">
+    	<tr>
+    		<th>Practice Name</th>
+    		<th>Name</th>
+    		<th>Email</th>
+    		<th>Phone#</th>
+    		<th>API Key</th>
+    		<th>Details</th>
+    	</tr>
+    	<tbody>
+    		<tr ng-repeat='client in allClients | orderBy: name | filter:searchText'>
+	    		<td>{{client.practice}}</td>
+	    		<td>{{client.firstName}} {{client.lastName}}</td>
+	    		<td>{{client.email}}</td>
+	    		<td>{{client.phone}}</td>
+	    		<td>{{client.apiKey}}</td>
+	    		<td><a ng-click='findClientDetails(client.apiKey)' data-toggle="modal" data-target="#clientModal">View Details</a></td>
+	    	</tr>
+    	</tbody>
+	</table>
+</div>
+<!-- End Client Table -->
+
+<!-- Specific Client Modal -->
+<div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">{{clientInfo.client[0].practice}}</h2>
+			</div>
+			<div class="modal-header">
+				<address>
+					<strong>{{clientInfo.client[0].firstName}} {{clientInfo.client[0].lastName}}</strong><br>
+					<a href="mailto:#">{{clientInfo.client[0].email}}</a>
+				</address>
+				<a data-toggle="modal" data-target="#editClientModal" data-dismiss="modal">Edit</a>
+			</div>
+			<div class="modal-header">
+			<h4><strong>Locations</strong></h4>
+				<address ng-repeat='location in clientInfo.location'>
+					<strong>{{location.name}}</strong><br>
+					{{location.streetAddress}}<br>
+					{{location.city}}, {{location.state}} {{location.zip}}<br>
+					<abbr title="Phone">P:{{location.phone}}</abbr><br>
+					<a ng-click='findLocation(location._id)'  data-toggle="modal" data-target="#editLocationModal" data-dismiss="modal">Edit</a>
+				</address>
+				<button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#addLocationModal" data-dismiss="modal">Add Location</button>
+			</div>
+
+			<div class="modal-header">
+			<h4><strong>Patients</strong></h4>
+				<address ng-repeat='patient in clientInfo.patient'>
+					<strong>{{patient.firstName}} {{patient.lastName}}</strong><br>
+					{{patient.streetAddress}}<br>
+					{{patient.city}}, {{location.state}} {{patient.zip}}<br>
+					<abbr title="Phone">P:{{patient.phone}}</abbr><br><br>
+				</address>
+			</div>
+
+			<div class="modal-header">
+			<h4><strong>Content</strong></h4>
+				<address ng-repeat='content in clientInfo.content'>
+					<strong>{{content.title}}</strong><br>
+					{{content.information}}
+				</address>
+			</div>
+
+			<div class="modal-header text-center">
+			<h4><strong>Media</strong></h4>
+				<strong>Images</strong><br>
+				<div ng-repeat="image in clientInfo.media | filter:{'type': 'Image'}:true">
+					<img  src="{{image.mediaURL}}"><br>
+					<a ng-click='deleteMedia({apiKey: image.apiKey, id: image._id})'>Delete</a>
+				</div>
+				
+
+			<br>
+				<strong>Videos</strong><br>
+				<div ng-repeat="video in clientInfo.media | filter:{'type': 'Video'}:true">
+					<video width="320" height="240" controls >
+						<source src="{{trustSrc(video.mediaURL)}}" type="video/mp4">
+						<source src="{{trustSrc(video.mediaURL)}}" type="video/ogg">
+						Your browser does not support the video tag.
+					</video><br>
+					<a ng-click='deleteMedia({apiKey: video.apiKey, id: video._id})'>Delete</a>
+				</div>
+					
+					
+			</div>
+
+			<div class="modal-footer">
+				<!-- <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#addLocationModal" data-dismiss="modal">Add Location</button> -->
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- End Specific Client Modal -->
+
+<!-- Edit Client Modal -->
+<div class="modal fade" id="editClientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">{{clientInfo.client[0].practice}} <br><small>Edit Client</small></h2>
+			</div>
+			<div class="modal-body">
+				<form ng-submit='editClient(clientInfo.client[0])' >
+					<div class="form-group">
+						<label>Practice</label>
+						<input type="text" class="form-control" placeholder="{{clientInfo.client[0].practice}}" ng-model='clientInfo.client[0].practice'>
+					</div>
+					<div class="form-group">
+						<label>First Name</label>
+						<input type="text" class="form-control" placeholder="{{clientInfo.client[0].firstName}}" ng-model='clientInfo.client[0].firstName'>
+					</div>
+					<div class="form-group">
+						<label>Last Name</label>
+						<input type="text" class="form-control" placeholder="{{clientInfo.client[0].lastName}}" ng-model='clientInfo.client[0].lastName'>
+					</div>
+					<div class="form-group">
+						<label>Phone</label>
+						<input type="text" class="form-control" placeholder="{{clientInfo.client[0].phone}}" ng-model='clientInfo.client[0].phone'>
+					</div>
+					<div class="form-group">
+						<label>Email</label>
+						<input type="text" class="form-control" placeholder="{{clientInfo.client[0].email}}" ng-model='clientInfo.client[0].email'>
+					</div>
+					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger pull-left" data-dismiss="modal" ng-click='deleteClient(clientInfo.client[0]._id)'>Delete</button>
+						<button type="close" class="btn btn-default " data-dismiss="modal" ng-click='clearNewAddress()'>Close</button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editClientModal">Update</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Edit Client Modal -->
+
+
+<!-- Add New Location for Individual Client Modal -->
+<div class="modal fade" id="addLocationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">{{clientInfo.client[0].firstName}} {{clientInfo.client[0].lastName}} <small>Add Location</small></h2>
+			</div>
+			<div class="modal-body">
+				<form ng-submit='addAddressToClient(clientInfo.client[0].apiKey)'>
+					<div class="form-group">
+						<label>Location Name</label>
+						<input type="text" class="form-control" placeholder="Location" ng-model='newAddress.name'>
+					</div>
+					<div class="form-group">
+						<label>Phone</label>
+						<input type="text" class="form-control" placeholder="(xxx) xxx-xxxx" ng-model='newAddress.phone'>
+					</div>
+					<div class="form-group form-inline">
+						<label>Street Address</label>
+						<input type="text" class="form-control" placeholder="1000 Main Street" ng-model='newAddress.streetAddress'>
+
+						<label>City/Town</label>
+						<input type="text" class="form-control" placeholder="Houston" ng-model='newAddress.city'>
+					</div>
+					<div class="form-group form-inline">
+						<label>State/Province</label>
+						<input type="text" class="form-control" placeholder="Texas" ng-model='newAddress.state'>
+						
+						<label>Zip Code </label>
+						<input type="text" class="form-control" placeholder="77002" ng-model='newAddress.zip'>
+					</div>
+					<div class="form-group">
+						<label>Country</label>
+						<select class="form-control" ng-model='newAddress.country'>
+							<option>United States of America</option>
+							<option>Other</option>
+						</select>
+					</div>
+					<div class="modal-footer">
+						<button type="close" class="btn btn-default" data-dismiss="modal" ng-click='clearNewAddress()'>Close</button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addLocationModal">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End New Location for Individual Client Modal -->
+
+<!-- Edit Address Modal -->
+<div class="modal fade" id="editLocationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h2 class="modal-title" id="myModalLabel">{{address.name}} <br><small>Edit Location</small></h2>
+			</div>
+			<div class="modal-body">
+				<form ng-submit='editLocation(address)' >
+					<div class="form-group">
+						<label>Name</label>
+						<input type="text" class="form-control" placeholder="{{address.name}}" ng-model='address.name'>
+					</div>
+					<div class="form-group">
+						<label>Phone</label>
+						<input type="text" class="form-control" placeholder="{{address.phone}}" ng-model='address.phone'>
+					</div>
+					<div class="form-group form-inline">
+						<label>Street Address</label>
+						<input type="text" class="form-control" placeholder="{{address.streetAddress}}" ng-model='address.streetAddress'>
+
+						<label>City/Town</label>
+						<input type="text" class="form-control" placeholder="{{address.city}}" ng-model='address.city'>
+					</div>
+					<div class="form-group form-inline">
+						<label>State/Province</label>
+						<input type="text" class="form-control" placeholder="{{address.state}}" ng-model='address.state'>
+						
+						<label>Zip Code </label>
+						<input type="text" class="form-control" placeholder="77002" ng-model='address.zip'>
+					</div>
+					<div class="form-group">
+						<label>Country</label>
+						<select class="form-control" ng-model='address.country'>
+							<option>United States of America</option>
+							<option>Other</option>
+						</select>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger pull-left" data-dismiss="modal" ng-click='deleteClientLocation(address._id)'>Delete</button>
+						<button type="close" class="btn btn-default " data-dismiss="modal" ng-click='clearNewAddress()'>Close</button>
+						<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#editLocationModal">Update</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Edit Address Modal -->
+<br><br>
